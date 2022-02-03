@@ -8,10 +8,10 @@ public class Token implements IToken {
 	
 	final Kind kind;
 	final String input;
-	final int pos;
+	final SourceLocation pos;
 	final int length;
 	
-	public Token(Kind kind, String input, int pos, int length)
+	public Token(Kind kind, String input, SourceLocation pos, int length)
 	{
 		this.kind = kind;
 		this.input = input;
@@ -31,10 +31,7 @@ public class Token implements IToken {
 		return input;
 	}
 	
-	@Override public SourceLocation getSourceLocation()
-	{
-		 return new SourceLocation(1,0);
-	} 
+	@Override public SourceLocation getSourceLocation() {return pos;}
 	
 	@Override public int getIntValue()
 	{
