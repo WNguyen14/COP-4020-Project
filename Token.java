@@ -1,13 +1,17 @@
 package edu.ufl.cise.plc;
 
+import java.lang.reflect.Type;
+
+import static java.lang.Integer.parseInt;
+
 public class Token implements IToken {
 	
 	final Kind kind;
 	final String input;
-	final int pos;
+	final SourceLocation pos;
 	final int length;
 	
-	public Token(Kind kind, String input, int pos, int length)
+	public Token(Kind kind, String input, SourceLocation pos, int length)
 	{
 		this.kind = kind;
 		this.input = input;
@@ -22,34 +26,55 @@ public class Token implements IToken {
 		return kind;
 	}
 	
-	@Override String getText()
+	@Override public String getText()
 	{
-	
+		return input;
 	}
 	
-	@Override SourceLocation getSourcePosition()
-	{
-		 
-	} 
+	@Override public SourceLocation getSourceLocation() {return pos;}
 	
-	@Override int getIntValue()
+	@Override public int getIntValue()
 	{
-		
+		if (kind == Kind.INT_LIT)
+		{
+			return parseInt(input);
+		}
+		else
+		{
+			//error
+			return 0;
+		}
 	}
 	
-	@Override float getFloatValue()
+	@Override public float getFloatValue()
 	{
-		
+		if (kind == Kind.FLOAT_LIT)
+		{
+			return Float.parseFloat(input);
+		}
+		else
+		{
+			//error
+			return 0;
+		}
 	}
 	
-	@Override boolean getBooleanValue()
+	@Override public boolean getBooleanValue()
 	{
-		
+		if (kind == Kind.INT_LIT)
+		{
+			return Boolean.parseBoolean(input);
+		}
+		else
+		{
+			//error
+			return false;
+		}
 	}
 	
-	@Override String getStringValue()
+	@Override public String getStringValue() //need to implement delimiters and escape sequences
 	{
-		
+		return input;
 	}
 	
 	
