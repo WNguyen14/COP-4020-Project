@@ -103,6 +103,10 @@ public class Lexer implements ILexer{
 						if ( ('a' <= ch) && (ch <= 'z') || ('A' <= ch) && (ch <= 'Z')  || ch == '_' || ch == '$') {
 							state = State.IN_IDENT;
 						}
+						else if (('0' <= ch) && (ch <= '9'))
+						{
+							state = State.IN_NUM;
+						}
 						else
 						{
 							Token newToken = new Token(Kind.ERROR, Character.toString(ch), new IToken.SourceLocation(line, col), 1);
@@ -142,13 +146,26 @@ public class Lexer implements ILexer{
 					{
 						tokenPos++;
 						pos++;
-						col++;
 						characters+=(ch);
 					}
 					default ->
 					{
+						try
+						{
+							Integer.parseInt(characters);
+						}
+						catch(Exception NumberFormatException)
+						{
+							Token newToken = new Token(Kind.ERROR, characters, new IToken.SourceLocation(line, col), pos-tokenPos);
+							tokens.add(newToken);
+							col+=characters.length();
+							state = State.START;
+							return;
+						}
+					
 						Token newToken = new Token(Kind.INT_LIT, characters, new IToken.SourceLocation(line, col), pos-tokenPos);
 						tokens.add(newToken);
+						col+=characters.length();
 						state = State.START;
 					}
 				}
@@ -158,18 +175,19 @@ public class Lexer implements ILexer{
 			else if (state == State.IN_IDENT)
 			{
 				int tokenPos = 0;
-				if ( ('a' <= ch) && (ch <= 'z') || ('A' <= ch) && (ch <= 'Z')  || ch == '_' || ch == '$' || ('0' <= ch) && (ch <= '9'))
+				if ( (('a' <= ch) && (ch <= 'z')) || (('A' <= ch) && (ch <= 'Z'))  || ch == '_' || ch == '$' || (('0' <= ch) && (ch <= '9')))
 				{
 					System.out.println(ch);
 					tokenPos++;
 					pos++;
-					col++;
 					characters+=(ch);
 				}
 				else
 				{
 					Token newToken = new Token(Kind.IDENT, characters, new IToken.SourceLocation(line, col), pos-tokenPos);
 					tokens.add(newToken);
+					col+= characters.length();
+
 					state = State.START;
 				}
 
@@ -183,7 +201,7 @@ public class Lexer implements ILexer{
 		IToken nextToken = tokens.get(internalPos++);
 		if (nextToken.getKind() == Kind.ERROR)
 		{
-			throw new LexicalException("illegal character");
+			throw new LexicalException("lexical exception");
 		}
 		else
 		{
