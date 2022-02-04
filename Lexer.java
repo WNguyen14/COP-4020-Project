@@ -24,7 +24,7 @@ public class Lexer implements ILexer{
 		HAVE_LT,
 		HAVE_BANG,
 	}
-	
+
 	private String characters = "";
 
 	public Lexer(String input)
@@ -41,180 +41,177 @@ public class Lexer implements ILexer{
 			char ch = chars [pos];
 			if (state == State.START) //START CASE
 			{
-				characters = ""; 
+				characters = "";
 				startPos = pos;
 				switch(ch) //issue: if there is no 0, then we are stuck?
 				{
 					case '\n' ->
-					{
-						line++;
-						col = 0;
-						pos++;
-					}
+							{
+								line++;
+								col = 0;
+								pos++;
+							}
 					case ' ', '\t', '\r' ->
-					{
-						pos++;
-						col++;
-					}
+							{
+								pos++;
+								col++;
+							}
 					case '+' ->
-					{
-						Token newToken = new Token(Kind.PLUS, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						pos++;
-						col++;
-					}
+							{
+								Token newToken = new Token(Kind.PLUS, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								pos++;
+								col++;
+							}
 					case '-' ->
-					{
-						state = State.HAVE_MINUS;
-						characters += ch;
-						pos++;
-					}
+							{
+								state = State.HAVE_MINUS;
+								characters += ch;
+								pos++;
+							}
 					case '*' ->
-					{
-						Token newToken = new Token(Kind.TIMES, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						pos++;
-						col++;
-					}
+							{
+								Token newToken = new Token(Kind.TIMES, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								pos++;
+								col++;
+							}
 					//start here
 					case '&' ->
-					{
-						Token newToken = new Token(Kind.AND, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						pos++;
-						col++;
-					}
+							{
+								Token newToken = new Token(Kind.AND, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								pos++;
+								col++;
+							}
 					case '!' ->
-					{
-						state = State.HAVE_BANG;
-						characters += ch;
-						pos++;
-					}
+							{
+								state = State.HAVE_BANG;
+								characters += ch;
+								pos++;
+							}
 					case ',' ->
-					{
-						Token newToken = new Token(Kind.COMMA, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						pos++;
-						col++;
-					}
+							{
+								Token newToken = new Token(Kind.COMMA, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								pos++;
+								col++;
+							}
 					case '/' ->
-					{
-						Token newToken = new Token(Kind.DIV, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						pos++;
-						col++;
-					}
+							{
+								Token newToken = new Token(Kind.DIV, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								pos++;
+								col++;
+							}
 					case '>' ->
-					{
-						state = State.HAVE_GT;
-						characters += ch;
-						pos++;
-					}
+							{
+								state = State.HAVE_GT;
+								characters += ch;
+								pos++;
+							}
 					case '<' ->
-					{
-						state = State.HAVE_LT;
-						characters += ch;
-						pos++;
-					}
+							{
+								state = State.HAVE_LT;
+								characters += ch;
+								pos++;
+							}
 					case '(' ->
-					{
-						Token newToken = new Token(Kind.LPAREN, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						pos++;
-						col++;
-					}
+							{
+								Token newToken = new Token(Kind.LPAREN, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								pos++;
+								col++;
+							}
 					case '[' ->
-					{
-						Token newToken = new Token(Kind.LSQUARE, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						pos++;
-						col++;
-					}
+							{
+								Token newToken = new Token(Kind.LSQUARE, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								pos++;
+								col++;
+							}
 					case '%' ->
-					{
-						Token newToken = new Token(Kind.MOD, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						pos++;
-						col++;
-					}
+							{
+								Token newToken = new Token(Kind.MOD, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								pos++;
+								col++;
+							}
 					case '|' ->
-					{
-						Token newToken = new Token(Kind.OR, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						pos++;
-						col++;
-					}
+							{
+								Token newToken = new Token(Kind.OR, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								pos++;
+								col++;
+							}
 					case '^' ->
-					{
-						Token newToken = new Token(Kind.RETURN, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						pos++;
-						col++;
-					}
+							{
+								Token newToken = new Token(Kind.RETURN, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								pos++;
+								col++;
+							}
 					case ')' ->
-					{
-						Token newToken = new Token(Kind.RPAREN, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						pos++;
-						col++;
-					}
+							{
+								Token newToken = new Token(Kind.RPAREN, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								pos++;
+								col++;
+							}
 					case ']' ->
-					{
-						Token newToken = new Token(Kind.RSQUARE, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						pos++;
-						col++;
-					}
+							{
+								Token newToken = new Token(Kind.RSQUARE, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								pos++;
+								col++;
+							}
 					case ';' ->
-					{
-						Token newToken = new Token(Kind.SEMI, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						pos++;
-						col++;
-					}
+							{
+								Token newToken = new Token(Kind.SEMI, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								pos++;
+								col++;
+							}
 					//end here
 					case '=' ->
-					{
-						state = State.HAVE_EQ;
-						characters += ch;
-						pos++;
-					}
+							{
+								state = State.HAVE_EQ;
+								characters += ch;
+								pos++;
+							}
 					case '#' ->
-					{
-						while(ch != '\n')
-						{
-							pos++;
-							col++;
-							ch = chars [pos];
-						}
-					}
+							{
+								while(ch != '\n')
+								{
+									pos++;
+									col++;
+									ch = chars [pos];
+								}
+							}
 					case '"' ->
-					{
-						state = State.IN_STRINGLIT;
-						kind = Kind.STRING_LIT;
-					}
-					case 0 ->
-					{
-						// instructions say to add an EOF token?
-						return;
-					}
+							{
+								state = State.IN_STRINGLIT;
+								kind = Kind.STRING_LIT;
+								characters += (ch);
+								pos++;
+							}
 					default ->
-					{
-						if ( ('a' <= ch) && (ch <= 'z') || ('A' <= ch) && (ch <= 'Z')  || ch == '_' || ch == '$') {
-							state = State.IN_IDENT;
-						}
-						else if (('0' <= ch) && (ch <= '9'))
-						{
-							state = State.IN_NUM;
-						}
-						else
-						{
-							Token newToken = new Token(Kind.ERROR, Character.toString(ch), new IToken.SourceLocation(line, col), 1);
-							tokens.add(newToken);
-							pos++;
-							state = State.START;
-						}
-					}
+							{
+								if ( ('a' <= ch) && (ch <= 'z') || ('A' <= ch) && (ch <= 'Z')  || ch == '_' || ch == '$') {
+									state = State.IN_IDENT;
+								}
+								else if (('0' <= ch) && (ch <= '9'))
+								{
+									state = State.IN_NUM;
+								}
+								else
+								{
+									Token newToken = new Token(Kind.ERROR, Character.toString(ch), new IToken.SourceLocation(line, col), 1);
+									tokens.add(newToken);
+									pos++;
+									state = State.START;
+								}
+							}
 				}
 
 			}
@@ -223,21 +220,21 @@ public class Lexer implements ILexer{
 				switch (ch)
 				{
 					case '>' ->
-					{
-						characters += ch;
-						Token newToken = new Token(Kind.RARROW, characters, new IToken.SourceLocation(line, col), 2);
-						tokens.add(newToken);
-						pos++;
-						col += 2;
-						state = State.START;
-					}
+							{
+								characters += ch;
+								Token newToken = new Token(Kind.RARROW, characters, new IToken.SourceLocation(line, col), 2);
+								tokens.add(newToken);
+								pos++;
+								col += 2;
+								state = State.START;
+							}
 					default->
-					{
-						Token newToken = new Token(Kind.MINUS, characters, new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						col++;
-						state = State.START;
-					}
+							{
+								Token newToken = new Token(Kind.MINUS, characters, new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								col++;
+								state = State.START;
+							}
 				}
 			}
 			else if (state == State.HAVE_BANG)
@@ -245,21 +242,21 @@ public class Lexer implements ILexer{
 				switch (ch)
 				{
 					case '=' ->
-					{
-						characters += ch;
-						Token newToken = new Token(Kind.NOT_EQUALS, characters, new IToken.SourceLocation(line, col), 2);
-						tokens.add(newToken);
-						pos++;
-						col += 2;
-						state = State.START;
-					}
+							{
+								characters += ch;
+								Token newToken = new Token(Kind.NOT_EQUALS, characters, new IToken.SourceLocation(line, col), 2);
+								tokens.add(newToken);
+								pos++;
+								col += 2;
+								state = State.START;
+							}
 					default->
-					{
-						Token newToken = new Token(Kind.BANG, characters, new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						col++;
-						state = State.START;
-					}
+							{
+								Token newToken = new Token(Kind.BANG, characters, new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								col++;
+								state = State.START;
+							}
 				}
 			}
 			else if (state == State.HAVE_GT)
@@ -267,30 +264,30 @@ public class Lexer implements ILexer{
 				switch (ch)
 				{
 					case '=' ->
-					{
-						characters += ch;
-						Token newToken = new Token(Kind.GE, characters, new IToken.SourceLocation(line, col), 2);
-						tokens.add(newToken);
-						pos++;
-						col += 2;
-						state = State.START;
-					}
+							{
+								characters += ch;
+								Token newToken = new Token(Kind.GE, characters, new IToken.SourceLocation(line, col), 2);
+								tokens.add(newToken);
+								pos++;
+								col += 2;
+								state = State.START;
+							}
 					case '>' ->
-					{
-						characters += ch;
-						Token newToken = new Token(Kind.RANGLE, characters, new IToken.SourceLocation(line, col), 2);
-						tokens.add(newToken);
-						pos++;
-						col += 2;
-						state = State.START;
-					}
+							{
+								characters += ch;
+								Token newToken = new Token(Kind.RANGLE, characters, new IToken.SourceLocation(line, col), 2);
+								tokens.add(newToken);
+								pos++;
+								col += 2;
+								state = State.START;
+							}
 					default->
-					{
-						Token newToken = new Token(Kind.GT, characters, new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						col++;
-						state = State.START;
-					}
+							{
+								Token newToken = new Token(Kind.GT, characters, new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								col++;
+								state = State.START;
+							}
 				}
 			}
 			else if (state == State.HAVE_LT)
@@ -298,67 +295,44 @@ public class Lexer implements ILexer{
 				switch (ch)
 				{
 					case '=' ->
-					{
-						characters += ch;
-						Token newToken = new Token(Kind.LE, characters, new IToken.SourceLocation(line, col), 2);
-						tokens.add(newToken);
-						pos++;
-						col += 2;
-						state = State.START;
-					}
+							{
+								characters += ch;
+								Token newToken = new Token(Kind.LE, characters, new IToken.SourceLocation(line, col), 2);
+								tokens.add(newToken);
+								pos++;
+								col += 2;
+								state = State.START;
+							}
 					case '<' ->
-					{
-						characters += ch;
-						Token newToken = new Token(Kind.LANGLE, characters, new IToken.SourceLocation(line, col), 2);
-						tokens.add(newToken);
-						pos++;
-						col += 2;
-						state = State.START;
-					}
+							{
+								characters += ch;
+								Token newToken = new Token(Kind.LANGLE, characters, new IToken.SourceLocation(line, col), 2);
+								tokens.add(newToken);
+								pos++;
+								col += 2;
+								state = State.START;
+							}
 					case '-' ->
-					{
-						characters += ch;
-						Token newToken = new Token(Kind.LARROW, characters, new IToken.SourceLocation(line, col), 2);
-						tokens.add(newToken);
-						pos++;
-						col += 2;
-						state = State.START;
-					}
+							{
+								characters += ch;
+								Token newToken = new Token(Kind.LARROW, characters, new IToken.SourceLocation(line, col), 2);
+								tokens.add(newToken);
+								pos++;
+								col += 2;
+								state = State.START;
+							}
 					default->
-					{
-						Token newToken = new Token(Kind.LT, characters, new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						col++;
-						state = State.START;
-					}
+							{
+								Token newToken = new Token(Kind.LT, characters, new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								col++;
+								state = State.START;
+							}
 				}
 			}
 			else if (state == State.IN_STRINGLIT)
 			{
-				characters += (ch);
-				pos++;
-				ch = chars [pos];
-				if (ch == '\\')
-				{
-					pos++;
-					characters += (ch);
-					ch = chars [pos];
-					switch (ch)
-					{
-						case 'b', 't', 'n', 'f', 'r', '"', '\'', '\\' ->
-						{
-							pos++;
-							characters += (ch);
-						}
-						default ->
-						{
-							//error token
-						}
-
-					}
-
-				}
-				else if (ch == '\"')
+				if (ch == '\"')
 				{
 					pos++;
 					characters += (ch);
@@ -366,6 +340,29 @@ public class Lexer implements ILexer{
 					tokens.add(newToken);
 					col += characters.length();
 					state = State.START;
+				}
+				else if (ch == '\\')
+				{
+					pos++;
+					characters += (ch);
+					ch = chars [pos];
+					switch (ch)
+					{
+						case 'b', 't', 'n', 'f', 'r', '"', '\'', '\\' ->
+								{
+									pos++;
+									characters += (ch);
+								}
+						default ->
+								{
+									Token newToken = new Token(Kind.ERROR, characters, new IToken.SourceLocation(line, col), characters.length());
+									tokens.add(newToken);
+									col+=characters.length();
+									state = State.START;
+								}
+
+					}
+
 				}
 				else
 				{
@@ -378,21 +375,21 @@ public class Lexer implements ILexer{
 				switch (ch)
 				{
 					case '=' ->
-					{
-						characters += ch;
-						Token newToken = new Token(Kind.EQUALS, characters, new IToken.SourceLocation(line, col), 2);
-						tokens.add(newToken);
-						pos++;
-						col += 2;
-						state = State.START;
-					}
+							{
+								characters += ch;
+								Token newToken = new Token(Kind.EQUALS, characters, new IToken.SourceLocation(line, col), 2);
+								tokens.add(newToken);
+								pos++;
+								col += 2;
+								state = State.START;
+							}
 					default->
-					{
-						Token newToken = new Token(Kind.ASSIGN, characters, new IToken.SourceLocation(line, col), 1);
-						tokens.add(newToken);
-						col++;
-						state = State.START;
-					}
+							{
+								Token newToken = new Token(Kind.ASSIGN, characters, new IToken.SourceLocation(line, col), 1);
+								tokens.add(newToken);
+								col++;
+								state = State.START;
+							}
 				}
 			}
 			else if (state == State.IN_NUM)
@@ -436,20 +433,21 @@ public class Lexer implements ILexer{
 			}
 			else if (state == State.IN_IDENT)
 			{
-				int tokenPos = 0;
 				if ( (('a' <= ch) && (ch <= 'z')) || (('A' <= ch) && (ch <= 'Z'))  || ch == '_' || ch == '$' || (('0' <= ch) && (ch <= '9')))
 				{
-					tokenPos++;
 					pos++;
 					characters+=(ch);
+					if(pos == (input.length()-1) )
+					{
+						checkIdentifier(characters, line, col);
+						col+= characters.length();
+						state = State.START;
+					}
 				}
 				else
 				{
 					checkIdentifier(characters, line, col);
-					//Token newToken = new Token(Kind.IDENT, characters, new IToken.SourceLocation(line, col), pos-tokenPos);
-					//tokens.add(newToken);
 					col+= characters.length();
-
 					state = State.START;
 				}
 
@@ -479,7 +477,11 @@ public class Lexer implements ILexer{
 					}
 				}
 			}
-			
+
+		}
+		if(characters.length() != 0)
+		{
+			tokens.add(new Token(Kind.ERROR, input, new IToken.SourceLocation(line,col), characters.length()));
 		}
 		tokens.add(new Token(Kind.EOF, input, new IToken.SourceLocation(line,col), 0));
 	}
@@ -488,60 +490,60 @@ public class Lexer implements ILexer{
 		switch(input)
 		{
 			case "string", "int", "float", "boolean", "color", "image", "void" ->
-			{
-				Token newToken = new Token(Kind.TYPE, input, new IToken.SourceLocation(line, col), input.length());
-				tokens.add(newToken);
-			}
+					{
+						Token newToken = new Token(Kind.TYPE, input, new IToken.SourceLocation(line, col), input.length());
+						tokens.add(newToken);
+					}
 			case "getWidth", "getHeight" ->
-			{
-				Token newToken = new Token(Kind.IMAGE_OP, input, new IToken.SourceLocation(line, col), input.length());
-				tokens.add(newToken);
-			}
+					{
+						Token newToken = new Token(Kind.IMAGE_OP, input, new IToken.SourceLocation(line, col), input.length());
+						tokens.add(newToken);
+					}
 			case "getRed", "getGreen", "getBlue" ->
-			{
-				Token newToken = new Token(Kind.COLOR_OP, input, new IToken.SourceLocation(line, col), input.length());
-				tokens.add(newToken);
-			}
+					{
+						Token newToken = new Token(Kind.COLOR_OP, input, new IToken.SourceLocation(line, col), input.length());
+						tokens.add(newToken);
+					}
 			case "true", "false" ->
-			{
-				Token newToken = new Token(Kind.BOOLEAN_LIT, input, new IToken.SourceLocation(line, col), input.length());
-				tokens.add(newToken);
-			}
+					{
+						Token newToken = new Token(Kind.BOOLEAN_LIT, input, new IToken.SourceLocation(line, col), input.length());
+						tokens.add(newToken);
+					}
 			case  "if" ->
-			{
-				Token newToken = new Token(Kind.KW_IF, input, new IToken.SourceLocation(line, col), input.length());
-				tokens.add(newToken);
-			}
+					{
+						Token newToken = new Token(Kind.KW_IF, input, new IToken.SourceLocation(line, col), input.length());
+						tokens.add(newToken);
+					}
 			case  "else" ->
-			{
-				Token newToken = new Token(Kind.KW_ELSE, input, new IToken.SourceLocation(line, col), input.length());
-				tokens.add(newToken);
-			}
+					{
+						Token newToken = new Token(Kind.KW_ELSE, input, new IToken.SourceLocation(line, col), input.length());
+						tokens.add(newToken);
+					}
 			case  "fi" ->
-			{
-				Token newToken = new Token(Kind.KW_FI, input, new IToken.SourceLocation(line, col), input.length());
-				tokens.add(newToken);
-			}
+					{
+						Token newToken = new Token(Kind.KW_FI, input, new IToken.SourceLocation(line, col), input.length());
+						tokens.add(newToken);
+					}
 			case  "write" ->
-			{
-				Token newToken = new Token(Kind.KW_WRITE, input, new IToken.SourceLocation(line, col), input.length());
-				tokens.add(newToken);
-			}
+					{
+						Token newToken = new Token(Kind.KW_WRITE, input, new IToken.SourceLocation(line, col), input.length());
+						tokens.add(newToken);
+					}
 			case  "console" ->
-			{
-				Token newToken = new Token(Kind.KW_CONSOLE, input, new IToken.SourceLocation(line, col), input.length());
-				tokens.add(newToken);
-			}
+					{
+						Token newToken = new Token(Kind.KW_CONSOLE, input, new IToken.SourceLocation(line, col), input.length());
+						tokens.add(newToken);
+					}
 			case  "BLACK", "BLUE", "CYAN", "DARK_GRAY", "GRAY", "GREEN", "LIGHT_GRAY", "MAGENTA", "ORANGE", "PINK", "RED", "WHITE", "YELLOW" ->
-			{
-				Token newToken = new Token(Kind.COLOR_CONST, input, new IToken.SourceLocation(line, col), input.length());
-				tokens.add(newToken);
-			}
+					{
+						Token newToken = new Token(Kind.COLOR_CONST, input, new IToken.SourceLocation(line, col), input.length());
+						tokens.add(newToken);
+					}
 			default ->
-			{
-				Token newToken = new Token(Kind.IDENT, input, new IToken.SourceLocation(line, col), input.length());
-				tokens.add(newToken);
-			}
+					{
+						Token newToken = new Token(Kind.IDENT, input, new IToken.SourceLocation(line, col), input.length());
+						tokens.add(newToken);
+					}
 		}
 	}
 	@Override
@@ -556,7 +558,7 @@ public class Lexer implements ILexer{
 		{
 			return nextToken;
 		}
-		
+
 	}
 
 	@Override
