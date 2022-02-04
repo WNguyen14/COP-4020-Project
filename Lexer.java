@@ -20,6 +20,8 @@ public class Lexer implements ILexer{
 		HAVE_EQ,
 		HAVE_MINUS,
 	}
+	
+	private String characters = "";
 
 	public Lexer(String input)
 	{
@@ -28,12 +30,14 @@ public class Lexer implements ILexer{
 		int line = 0;
 		int col = 0;
 		State state = State.START;
+		//note for adding numbers
 		while (pos < input.length())
 		{
 			char[] chars = input.toCharArray();
 			char ch = chars [pos];
 			if (state == State.START) //START CASE
 			{
+				characters = ""; 
 				startPos = pos;
 				switch(ch) //issue: if there is no 0, then we are stuck?
 				{
@@ -50,18 +54,18 @@ public class Lexer implements ILexer{
 					}
 					case '+' ->
 					{
-						Token newToken = new Token(Kind.PLUS, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1); //WHERE AM I STORING THE TOKENS??
+						Token newToken = new Token(Kind.PLUS, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
 						tokens.add(newToken);
 						pos++;
 						col++;
 					}
 					case '-' ->
-							{
-								Token newToken = new Token(Kind.MINUS, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1); //WHERE AM I STORING THE TOKENS??
-								tokens.add(newToken);
-								pos++;
-								col++;
-							}
+					{
+						Token newToken = new Token(Kind.MINUS, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1); 
+						tokens.add(newToken);
+						pos++;
+						col++;
+					}
 					case '*' ->
 					{
 						Token newToken = new Token(Kind.TIMES, Character.toString(ch) ,new IToken.SourceLocation(line, col), 1);
@@ -101,7 +105,10 @@ public class Lexer implements ILexer{
 						}
 						else
 						{
-							System.out.println("unrecognized character");
+							Token newToken = new Token(Kind.ERROR, Character.toString(ch), new IToken.SourceLocation(line, col), 1);
+							tokens.add(newToken);
+							pos++;
+							state = State.START;
 						}
 					}
 				}
@@ -128,7 +135,6 @@ public class Lexer implements ILexer{
 			else if (state == State.IN_NUM)
 			{
 				int tokenPos = 0;
-				ArrayList<Character> numbers = new ArrayList<Character>(); //store the numbers as we go along in this character array
 				switch(ch)
 				{
 
@@ -137,11 +143,11 @@ public class Lexer implements ILexer{
 						tokenPos++;
 						pos++;
 						col++;
-						numbers.add(ch);
+						characters+=(ch);
 					}
 					default ->
 					{
-						Token newToken = new Token(Kind.INT_LIT, numbers.toString(), new IToken.SourceLocation(line, col), pos-tokenPos);
+						Token newToken = new Token(Kind.INT_LIT, characters, new IToken.SourceLocation(line, col), pos-tokenPos);
 						tokens.add(newToken);
 						state = State.START;
 					}
@@ -152,17 +158,17 @@ public class Lexer implements ILexer{
 			else if (state == State.IN_IDENT)
 			{
 				int tokenPos = 0;
-				ArrayList<Character> characters = new ArrayList<Character>(); //store the characters in identifier
 				if ( ('a' <= ch) && (ch <= 'z') || ('A' <= ch) && (ch <= 'Z')  || ch == '_' || ch == '$' || ('0' <= ch) && (ch <= '9'))
 				{
+					System.out.println(ch);
 					tokenPos++;
 					pos++;
 					col++;
-					characters.add(ch);
+					characters+=(ch);
 				}
 				else
 				{
-					Token newToken = new Token(Kind.IDENT, characters.toString(), new IToken.SourceLocation(line, col), pos-tokenPos);
+					Token newToken = new Token(Kind.IDENT, characters, new IToken.SourceLocation(line, col), pos-tokenPos);
 					tokens.add(newToken);
 					state = State.START;
 				}
@@ -174,7 +180,16 @@ public class Lexer implements ILexer{
 	@Override
 	public IToken next() throws LexicalException
 	{
-		return tokens.get(internalPos++);
+		IToken nextToken = tokens.get(internalPos++);
+		if (nextToken.getKind() == Kind.ERROR)
+		{
+			throw new LexicalException("illegal character");
+		}
+		else
+		{
+			return nextToken;
+		}
+		
 	}
 
 	@Override
