@@ -18,7 +18,7 @@ public class Lexer implements ILexer{
 		IN_FLOAT,
 		IN_NUM,
 		HAVE_EQ,
-		HAVE_MINUS,
+		HAVE_MINUS, IN_STRINGLIT,
 	}
 	
 	private String characters = "";
@@ -90,7 +90,7 @@ public class Lexer implements ILexer{
 					}
 					case '"' ->
 							{
-								state = State.IN_IDENT;
+								state = State.IN_STRINGLIT;
 								kind = Kind.STRING_LIT;
 							}
 					case 0 ->
@@ -117,6 +117,46 @@ public class Lexer implements ILexer{
 					}
 				}
 
+			}
+			else if (state == State.IN_STRINGLIT)
+			{
+				characters += (ch);
+				pos++;
+				ch = chars [pos];
+				if (ch == '\\')
+				{
+					pos++;
+					characters += (ch);
+					ch = chars [pos];
+					switch (ch)
+					{
+						case 'b', 't', 'n', 'f', 'r', '"', '\'', '\\' ->
+						{
+							pos++;
+							characters += (ch);
+						}
+						default ->
+						{
+							//error token
+						}
+
+					}
+
+				}
+				else if (ch == '\"')
+				{
+					pos++;
+					characters += (ch);
+					Token newToken = new Token(Kind.STRING_LIT, characters, new IToken.SourceLocation(line, col), characters.length());
+					tokens.add(newToken);
+					col += characters.length();
+					state = State.START;
+				}
+				else
+				{
+					pos++;
+					characters += (ch);
+				}
 			}
 			else if (state == State.HAVE_EQ)
 			{
@@ -195,6 +235,10 @@ public class Lexer implements ILexer{
 					state = State.START;
 				}
 
+			}
+			else if (state == State.HAVE_DOT)
+			{
+				
 			}
 		}
 		tokens.add(new Token(Kind.EOF, input, new IToken.SourceLocation(line,col), 0));
