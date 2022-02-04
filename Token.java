@@ -35,15 +35,7 @@ public class Token implements IToken {
 	
 	@Override public int getIntValue()
 	{
-		if (kind == Kind.INT_LIT)
-		{
-			return parseInt(input);
-		}
-		else
-		{
-			//error
-			return 0;
-		}
+		return parseInt(input);
 	}
 	
 	@Override public float getFloatValue()

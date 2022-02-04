@@ -181,10 +181,9 @@ public class Lexer implements ILexer{
 							}
 					case '#' ->
 							{
-								while(ch != '\n')
+								while(ch != '\n' && pos < input.length())
 								{
 									pos++;
-									col++;
 									ch = chars [pos];
 								}
 							}
@@ -199,10 +198,36 @@ public class Lexer implements ILexer{
 							{
 								if ( ('a' <= ch) && (ch <= 'z') || ('A' <= ch) && (ch <= 'Z')  || ch == '_' || ch == '$') {
 									state = State.IN_IDENT;
+									if(pos == (input.length()-1) )
+									{
+										characters+=(ch);
+										checkIdentifier(characters, line, col);
+										col+= characters.length();
+										state = State.START;
+										pos++;
+									}
 								}
 								else if (('0' <= ch) && (ch <= '9'))
 								{
 									state = State.IN_NUM;
+									if(pos == (input.length()-1) ) {
+										characters += ch;
+										try {
+											Integer.parseInt(characters);
+											Token newToken = new Token(Kind.INT_LIT, characters, new IToken.SourceLocation(line, col), characters.length());
+											tokens.add(newToken);
+											col += characters.length();
+											state = State.START;
+											pos++;
+										} catch (Exception NumberFormatException) {
+											Token newToken = new Token(Kind.ERROR, characters, new IToken.SourceLocation(line, col), characters.length());
+											tokens.add(newToken);
+											col += characters.length();
+											state = State.START;
+											pos++;
+											return;
+										}
+									}
 								}
 								else
 								{
