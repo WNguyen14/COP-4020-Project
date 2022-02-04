@@ -211,7 +211,16 @@ public class Lexer implements ILexer{
 	@Override
 	public IToken next() throws LexicalException
 	{
-		return tokens.get(internalPos++);
+		IToken nextToken = tokens.get(internalPos++);
+		if (nextToken.getKind() == Kind.ERROR)
+		{
+			throw new LexicalException("illegal character");
+		}
+		else
+		{
+			return nextToken;
+		}
+		
 	}
 
 	@Override
