@@ -76,8 +76,8 @@ public class Lexer implements ILexer{
 					case '=' ->
 					{
 						state = State.HAVE_EQ;
+						characters += ch;
 						pos++;
-						col++;
 					}
 					case '#' ->
 					{
@@ -124,15 +124,19 @@ public class Lexer implements ILexer{
 				{
 					case '=' ->
 					{
-						Token newToken = new Token(Kind.EQUALS, Character.toString(ch), new IToken.SourceLocation(line, col), 2);
+						characters += ch;
+						Token newToken = new Token(Kind.EQUALS, characters, new IToken.SourceLocation(line, col), 2);
 						tokens.add(newToken);
 						pos++;
-						col++;
+						col += 2;
+						state = State.START;
 					}
 					default->
 					{
-						//throw an exception or something?
-						return;
+						Token newToken = new Token(Kind.ASSIGN, characters, new IToken.SourceLocation(line, col), 1);
+						tokens.add(newToken);
+						col++;
+						state = State.START;
 					}
 				}
 			}
