@@ -72,10 +72,57 @@ public class Token implements IToken {
 		}
 	}
 	
+	//stolen from stackoverflow
+	public String unescapeJavaString(String st) {
+
+	    StringBuilder sb = new StringBuilder(st.length());
+
+	    for (int i = 0; i < st.length(); i++) {
+	        char ch = st.charAt(i);
+	        if (ch == '\\') {
+	            char nextChar = (i == st.length() - 1) ? '\\' : st
+	                    .charAt(i + 1);
+	            switch (nextChar) {
+	            case '\\':
+	                ch = '\\';
+	                break;
+	            case 'b':
+	                ch = '\b';
+	                break;
+	            case 'f':
+	                ch = '\f';
+	                break;
+	            case 'n':
+	                ch = '\n';
+	                break;
+	            case 'r':
+	                ch = '\r';
+	                break;
+	            case 't':
+	                ch = '\t';
+	                break;
+	            case '\"':
+	                ch = '\"';
+	                break;
+	            case '\'':
+	                ch = '\'';
+	                break;	            
+	            }
+	            i++;
+	        }
+	        sb.append(ch);
+	    }
+	    return sb.toString();
+	}
+	
 	@Override public String getStringValue() //need to implement delimiters and escape sequences
 	{
-		return input;
+		String newString = unescapeJavaString(input);
+		newString = newString.substring(1,newString.length()-1);
+		System.out.println(newString);
+		return newString;
 	}
+	
 	
 	
 	
