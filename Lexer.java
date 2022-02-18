@@ -572,10 +572,7 @@ public class Lexer implements ILexer{
 		}
 	}
 	
-	public int getTokensSize()
-	{
-		return tokens.size();
-	}
+	
 	@Override
 	public IToken next() throws LexicalException
 	{

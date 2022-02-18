@@ -61,10 +61,11 @@ public class Token implements IToken {
 	
 	@Override public boolean getBooleanValue()
 	{
-		if (kind == Kind.INT_LIT)
+		if (kind == kind.BOOLEAN_LIT)
 		{
 			return Boolean.parseBoolean(input);
 		}
+		
 		else
 		{
 			//error
