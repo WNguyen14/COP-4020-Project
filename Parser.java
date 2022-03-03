@@ -1,8 +1,11 @@
 package edu.ufl.cise.plc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.ufl.cise.plc.IToken.Kind;
 import edu.ufl.cise.plc.ast.*;
-import edu.ufl.cise.plc.ast.UnaryExprPostfix;
+import edu.ufl.cise.plc.ast.Types.Type;
 
 public class Parser implements IParser {
 	
@@ -11,7 +14,9 @@ public class Parser implements IParser {
 	IToken t;
 	ILexer lexer;
 
-
+	List<ASTNode> decsAndStatements = new ArrayList<ASTNode>();
+	List<NameDef> listNameDef = new ArrayList<NameDef>();
+	
 	public Parser(String input)
 	{
 		this.lexer = CompilerComponentFactory.getLexer(input);
@@ -38,6 +43,210 @@ public class Parser implements IParser {
 			}
 		}
 		return false;
+	}
+	
+	
+	public Program prog() throws PLCException
+	{
+		IToken firstToken = t;
+		Type returnType;
+		String name;
+		
+		if(isKind(Kind.KW_VOID))
+		{
+			returnType = Type.VOID;
+		}
+		else{
+			try {
+				Type.toType(t.getText());
+			}
+			catch(IllegalArgumentException e)
+			{
+				throw new SyntaxException("invalid character name");
+			}
+			returnType = Type.toType(t.getText());
+		}
+		consume();
+		if (t.getKind() != Kind.IDENT)
+		{
+			throw new SyntaxException("invalid character name");
+		}
+		name = t.getText();
+		consume();
+		match(Kind.LPAREN);
+		if(t.getKind() != Kind.RPAREN)
+		{
+			IToken t2 = t;
+			consume();
+			try {
+				Type.toType(t2.getText());
+			}
+			catch (Exception IllegalArgumentException){
+				throw new SyntaxException("bad comma");
+			}
+			if(Type.toType(t2.getText()) == Type.VOID)
+			{
+				throw new SyntaxException("void param");
+			}
+			if (t.getKind() == Kind.LSQUARE)
+			{
+				IToken lsquare = t;
+				match(Kind.LSQUARE);
+				Expr width = expr();
+				match(Kind.COMMA);
+				Expr height = expr();
+				match(Kind.RSQUARE);
+				NameDefWithDim n = new NameDefWithDim(t, t2.getText(), t.getText(), new Dimension(lsquare, width, height));
+				consume();
+				listNameDef.add(n);
+			}
+			else {
+			listNameDef.add(new NameDef(t, t2.getText(), t.getText()));
+			consume();
+			}
+			while(t.getKind() == Kind.COMMA)
+			{
+				consume();
+				t2 = t;
+				try {
+					Type.toType(t2.getText());
+				}
+				catch (Exception IllegalArgumentException){
+					throw new SyntaxException("bad comma");
+				}
+				if(Type.toType(t2.getText()) == Type.VOID)
+				{
+					throw new SyntaxException("void param");
+				}
+				consume();
+				if (t.getKind() == Kind.LSQUARE)
+				{
+					IToken lsquare = t;
+					match(Kind.LSQUARE);
+					Expr width = expr();
+					match(Kind.COMMA);
+					Expr height = expr();
+					match(Kind.RSQUARE);
+					NameDefWithDim n = new NameDefWithDim(t, t2.getText(), t.getText(), new Dimension(lsquare, width, height));
+					consume();
+					listNameDef.add(n);
+				}
+				else {
+				listNameDef.add(new NameDef(t, t2.getText(), t.getText()));
+				consume();
+				}
+			}
+		}
+		match(Kind.RPAREN);
+		
+		
+		while(t.getKind() != Kind.EOF) {
+			try {
+			if (Type.toType(t.getText()) == Type.VOID || Type.toType(t.getText()) == Type.CONSOLE) 
+				{
+					throw new SyntaxException("void name/console name");
+				}
+			}
+			catch (IllegalArgumentException e){
+			}
+			if(t.getKind() == Kind.IDENT || t.getKind() == Kind.KW_WRITE || t.getKind() == Kind.RETURN)
+			  { 
+				  if(t.getKind() == Kind.RETURN) 
+				  { 
+					  ReturnStatement r;
+					  firstToken = t; 
+					  consume();
+					  Expr e = expr();
+					  r = new ReturnStatement(firstToken, e);
+					  decsAndStatements.add(r);
+				  }
+				  else if (t.getKind() == Kind.KW_WRITE)
+				  {
+					  WriteStatement w;
+					  firstToken = t;
+					  consume();
+					  Expr source = expr();
+					  match(Kind.RARROW);
+					  Expr dest = expr();
+					  w = new WriteStatement(firstToken, source, dest);
+					  decsAndStatements.add(w);
+				  }
+				  else if (t.getKind() == Kind.IDENT)
+				  {
+					  firstToken = t;
+					  consume();
+					  PixelSelector p = null;
+					  if (isKind(Kind.LSQUARE))
+					{
+						consume();
+						Expr x = expr();
+						match(Kind.COMMA);
+						Expr y = expr();
+						match(Kind.RSQUARE);
+						p = new PixelSelector(firstToken, x, y);
+						
+					}
+					if (t.getKind() == Kind.ASSIGN)
+					{
+						consume();
+						Expr e = expr();
+						AssignmentStatement a = new AssignmentStatement(firstToken, firstToken.getText(), p, e);
+						decsAndStatements.add(a);
+					}
+					else if (t.getKind() == Kind.LARROW)
+					{
+						consume();
+						Expr e = expr();
+						ReadStatement r = new ReadStatement(firstToken, firstToken.getText(), p, e);
+						decsAndStatements.add(r);
+					}						
+					}
+					  
+
+				  match(Kind.SEMI);
+			  }
+			else {
+			IToken t2 = t;
+			consume();
+			if (t.getKind() == Kind.IDENT)
+			{
+				NameDef n = new NameDef(t, t2.getText(), t.getText());
+				consume();
+				if(t.getKind() != Kind.SEMI)
+				{
+					IToken var = t;
+					consume();
+					decsAndStatements.add(new VarDeclaration(t2, n, var, expr()));
+				}
+				else {
+				decsAndStatements.add(new VarDeclaration(t2, n, null, null));
+				}
+			}
+			else
+			{
+				IToken lsquare = t;
+				match(Kind.LSQUARE);
+				Expr width = expr();
+				match(Kind.COMMA);
+				Expr height = expr();
+				match(Kind.RSQUARE);
+				NameDefWithDim n = new NameDefWithDim(t, t2.getText(), t.getText(), new Dimension(lsquare, width, height));
+				consume();
+				if(t.getKind() != Kind.SEMI)
+				{
+					IToken var = t;
+					consume();
+					decsAndStatements.add(new VarDeclaration(t2, n, var, expr()));
+				}
+				else {
+				decsAndStatements.add(new VarDeclaration(t2, n, null, null));
+				}
+			}
+			
+			match(Kind.SEMI);
+			}
+		}
+		return new Program(firstToken, returnType, name, listNameDef, decsAndStatements);
 	}
 	
 	public Expr expr() throws PLCException
@@ -169,6 +378,27 @@ public class Parser implements IParser {
 			e = new IdentExpr(firstToken);
 			consume();
 		}
+		else if (isKind(Kind.COLOR_CONST))
+		{
+			e = new ColorConstExpr(firstToken);
+			consume();
+		}
+		else if (isKind(Kind.LANGLE))
+		{
+			consume();
+			Expr red = expr();
+			match(Kind.COMMA);
+			Expr green = expr();
+			match(Kind.COMMA);
+			Expr blue = expr();
+			e = new ColorExpr(firstToken, red, green, blue);
+			match(Kind.RANGLE);
+		}
+		else if (isKind(Kind.KW_CONSOLE))
+		{
+			e = new ConsoleExpr(firstToken);
+			consume();
+		}
 		else if (isKind(Kind.LPAREN))
 		{
 			consume();
@@ -213,14 +443,15 @@ public class Parser implements IParser {
 	public void consume() throws PLCException
 	{
 		System.out.println(t.getText());
-			this.t = lexer.next();
+		this.t = lexer.next();
 	}
 		
 	
 	@Override
 	public ASTNode parse() throws PLCException
 	{
-		return expr(); //return some ASTNode
+		
+		return prog(); //return some ASTNode
 		
 	}
 
