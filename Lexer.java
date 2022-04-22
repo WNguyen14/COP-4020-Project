@@ -571,6 +571,8 @@ public class Lexer implements ILexer{
 					}
 		}
 	}
+	
+	
 	@Override
 	public IToken next() throws LexicalException
 	{
