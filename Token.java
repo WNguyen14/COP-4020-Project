@@ -61,10 +61,11 @@ public class Token implements IToken {
 	
 	@Override public boolean getBooleanValue()
 	{
-		if (kind == Kind.INT_LIT)
+		if (kind == kind.BOOLEAN_LIT)
 		{
 			return Boolean.parseBoolean(input);
 		}
+		
 		else
 		{
 			//error
@@ -118,7 +119,7 @@ public class Token implements IToken {
 	@Override public String getStringValue() //need to implement delimiters and escape sequences
 	{
 		String newString = unescapeJavaString(input);
-		newString = newString.substring(1,newString.length()-1); //clips quotation marks
+		newString = newString.substring(1,newString.length()-1);
 		System.out.println(newString);
 		return newString;
 	}
